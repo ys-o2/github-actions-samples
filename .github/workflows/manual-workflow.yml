@@ -1,0 +1,16 @@
+name: Manual workflow
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'PAASON TWO GURIITO'
+        default: 'DEFORUTO'
+        required: true
+        type: string
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Send greeting
+      run: echo "HAROO ${{inputs.name}}"
+  
