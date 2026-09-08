@@ -7,11 +7,16 @@ on:
         default: 'DEFORUTO'
         required: true
         type: string
+      is-set-farewell-message:
+        description: 'SETTO FARAWERU MESSEEZI'
+        required: false
+        type: boolean
 jobs:
   greet:
     runs-on: ubuntu-latest
     steps:
-    - name: Send greeting
+    - name: SENDO GURIITHINGUS
       run: echo "HAROO ${{inputs.name}}"
-    - name: Send bye
+    - name: SENDO FARAWERU
+      if: ${{ inputs.is-set-farewell-message }}
       run: echo "GUDDOBAI ${{inputs.name}}"
