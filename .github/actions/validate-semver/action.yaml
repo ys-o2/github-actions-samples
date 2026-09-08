@@ -1,5 +1,5 @@
 name: 'Validate Semantic Version'
-description: 'Checks if the provided version follows Semantic Versioning'
+description: 'Checks if the provided version follows Semantic Versioninggg'
 inputs:
   version:
     description: 'Version to validate'

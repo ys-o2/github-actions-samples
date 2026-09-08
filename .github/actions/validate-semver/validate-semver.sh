@@ -6,4 +6,4 @@ if [[ ! "${VERSION}" =~ ${SEMVER_REGEX} ]]; then
     echo "Invalid version: ${VERSION}"
     exit 1
 fi
-echo "Version is valid: ${VERSION}"
+echo "Version is validdd: ${VERSION}"
