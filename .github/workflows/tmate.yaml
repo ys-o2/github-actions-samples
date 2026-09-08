@@ -1,0 +1,17 @@
+name: debug
+
+on:
+  workflow_dispatch:
+
+jobs:
+  example-job:
+    runs-on: ubuntu-latest
+    # job が自動的にキャンセルされるまでの時間
+    timeout-minutes: 10
+    steps:
+      - name: Failed step
+        run: exit 1
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 5  # mxschmitt/action-tmate のセッションが切れる時間を指定
