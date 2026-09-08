@@ -1,0 +1,24 @@
+name: 'Close Stale Issues'
+description: 'Close issues that have been stale for a specified number of days'
+
+inputs:
+  days-before-stale:
+    description: 'Number of days before an issue is considered stale'
+    required: true
+    default: '30'
+  github-token:
+    description: 'GitHub Token'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Run stale issue closer script
+      shell: bash
+      run: |
+        ${{ github.action_path }}/stale-issue-closer.sh --days ${{ inputs.days-before-stale }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
