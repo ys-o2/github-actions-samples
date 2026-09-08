@@ -1,12 +1,13 @@
 name: Validation Finished
 on:
-  workflow_run:
-    workflows: ["Validate Semantic Versioning"]
-    types: 
-      - completed
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: sstring
 jobs:
   message:
     runs-on: ubuntu-latest
     steps:
-      - name: Print message
-        run: echo "${{github.event.workflow_run.name}} WAS EXECUTED! <conclusion ${{github.event.workflow_run.conclusion}}>"
+      - name: Print Tag
+        run: echo "TThe tag is ${{inputs.tag}}"
