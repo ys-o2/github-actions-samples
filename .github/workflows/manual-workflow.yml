@@ -18,6 +18,7 @@ jobs:
     - name: SENDO GURIITHINGUS
       run: echo "HAROO ${{inputs.name}}"
   faraweru:
+    needs: greet
     runs-on: ubuntu-latest
     steps:
     - name: SENDO FARAWERU
