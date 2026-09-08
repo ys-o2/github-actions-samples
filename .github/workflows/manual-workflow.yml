@@ -17,6 +17,13 @@ jobs:
     steps:
     - name: SENDO GURIITHINGUS
       run: echo "HAROO ${{inputs.name}}"
+    - name: ZYUNBI FARAWERU MESSEEZI
+      if: ${{inputs.is-set-farewell-message}}
+      id: set-farawell-message
+      run: echo "farawell-message=DID YOU RECIEVE THE GREETING I SENT EARLIER?" >> $GITHUB_OUTPUT"
+    - name: DEBAGGU
+      if: ${{inputs.is-set-farewell-message}}
+      run: echo "${{steps.set-farawell-message.outputs.farawell-message}}"
   faraweru:
     needs: greet
     runs-on: ubuntu-latest
@@ -24,3 +31,7 @@ jobs:
     - name: SENDO FARAWERU
       if: ${{ inputs.is-set-farewell-message }}
       run: echo "GUDDOBAI ${{inputs.name}}"
+
+
+
+
