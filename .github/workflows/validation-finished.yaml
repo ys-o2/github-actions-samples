@@ -1,0 +1,12 @@
+name: Validation Finished
+on:
+  workflow_run:
+    workflows: ["Validate Semantic Versioning"]
+    types: 
+      - completed
+jobs:
+  message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print message
+        run: echo "${{github.event.workflow_run.name}} WAS EXECUTED! <conclusion ${{github.event.workflow_run.conclusion}}>"
