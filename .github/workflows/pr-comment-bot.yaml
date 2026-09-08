@@ -1,0 +1,65 @@
+name: PR Comment Bot
+
+on:
+  pull_request:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  pr-comment:
+    runs-on: ubuntu-latest
+
+    # job の中で利用する ${{ secrets.GITHUB_TOKEN }} のトークンが操作できる権限を設定
+    permissions:
+      contents: read           # リポジトリの内容に対する読み取り権限。actions/checkout で利用する。
+      issues: write            # issue に対する書き込み権限。issue の作成や更新に使用。
+      pull-requests: write     # pull request に対する書き込み権限。pull request へのコメントやマージに使用。
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+
+    # PR が公開された時にコメントをする
+    - name: Comment on PR creation
+      if: github.event_name == 'pull_request' && github.event.action == 'opened'
+      run: |
+        gh pr comment ${{ github.event.pull_request.number }} --body "Thank you for creating a PR! We will review it shortly."
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # quiz を出題
+    - name: Send Quiz
+      if: >
+        github.event_name == 'issue_comment' &&
+        contains(github.event.comment.body, '@github-actions quiz') &&
+        github.event.issue.pull_request != null
+      # gh pr comment --body に直接メッセージを入れると改行できない問題があるので標準入力をbodyに指定
+      # @see https://github.com/cli/cli/issues/595
+      run: |
+        gh pr comment ${{ github.event.issue.number }} --body \
+          "「後ウマイヤ朝の最盛期王は？」
+           A) アブド・アルラフマーン1世
+           B) アブド・アルラフマーン3世
+           C) ヒシャーム2世
+           D) ムハンマド1世"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # 回答の判定と返信
+    - name: Evaluate quiz answer
+      if: >
+        github.event_name == 'issue_comment' &&
+        contains(github.event.comment.body, '@github-actions') &&
+        github.event.issue.pull_request != null &&
+        !contains(github.event.comment.body, 'quiz')
+      # 最後の || true は終了ステータスを必ず0にする実装。（終了ステータスが0以外の場合はstepが失敗してしまうため）
+      run: |
+        answer=$(echo "${{ github.event.comment.body }}" | grep -oP '(?<=@github-actions )\b[ABCD](?=\)|\b)') || true
+        if [ "$answer" == "B" ]; then
+          gh pr comment ${{ github.event.issue.number }} --body "正解です！アブド・アルラフマーン3世が後ウマイヤ朝の最盛期王です。"
+        else
+          gh pr comment ${{ github.event.issue.number }} --body "残念！正解はB) アブド・アルラフマーン3世です。"
+        fi
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
