@@ -27,13 +27,12 @@ jobs:
           fi
           echo "tag=${tag}" >> $GITHUB_OUTPUT
           echo "tag=${tag}"
-      - name: Validate Semantic Version
-        id: validate-version
-        run: |
-          VERSION=${{steps.set-vars.outputs.tag}}
-          SEMVER_REGEX="^v([0-9]+)\.([0-9]+)\.([0-9]+)$"
-          if [[ ! "$VERSION" =~ $SEMVER_REGEX ]]; then
-            echo "Invalid version: ${VERSION}"
-            exit 1
-          fi
-          echo "Version is valid: ${VERSION}"
+
+      - name: Checkout code
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+
+      - name: Validate Semantic Version (for workflow_dispatch)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: ./.github/actions/validate-semver
+        with:
+          version: ${{ github.event.inputs.version }}
