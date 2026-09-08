@@ -13,4 +13,5 @@ jobs:
     steps:
     - name: Send greeting
       run: echo "HAROO ${{inputs.name}}"
-  
+    - name: Send bye
+      run: echo "GUDDOBAI ${{inputs.name}}"
