@@ -1,5 +1,8 @@
 name: Validate Semantic Versioning
 on:
+  push:
+    tags:
+      - '*'
   workflow_dispatch:
     inputs:
       version:
@@ -10,10 +13,24 @@ jobs:
   validate-tag:
     runs-on: ubuntu-latest
     steps:
+      - name: Set Variables Based on Event
+        id: set-vars
+        run: |
+          tag=""
+          if [ "${{ github.event_name }}" == "push" ]; then
+            tag=${GITHUB_REF#refs/tags/}
+          elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            tag=${{ inputs.version }}
+          else
+            echo "Error: Unsupported event_name '${{ github.event_name }}'" >&2
+            exit 1
+          fi
+          echo "tag=${tag}" >> $GITHUB_OUTPUT
+          echo "tag=${tag}"
       - name: Validate Semantic Version
         id: validate-version
         run: |
-          VERSION=${{github.event.inputs.version}}
+          VERSION=${{steps.set-vars.outputs.tag}}
           SEMVER_REGEX="^v([0-9]+)\.([0-9]+)\.([0-9]+)$"
           if [[ ! "$VERSION" =~ $SEMVER_REGEX ]]; then
             echo "Invalid version: ${VERSION}"
