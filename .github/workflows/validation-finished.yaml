@@ -4,7 +4,7 @@ on:
     inputs:
       tag:
         required: true
-        type: sstring
+        type: string
 jobs:
   message:
     runs-on: ubuntu-latest
