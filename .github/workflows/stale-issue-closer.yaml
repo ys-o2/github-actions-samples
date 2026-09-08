@@ -1,0 +1,38 @@
+name: Stale Issue Closer
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 毎日00:00(UTC)に実行(日本時間で午前9時に実行)
+  workflow_dispatch:     # 手動実行
+    inputs:
+      days-before-stale:
+        description: 'Number of days before an issue is considered stale'
+        required: false
+        default: '30'
+
+jobs:
+  close-stale-issues:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 指定した ID の GitHub Apps トークンを作成
+      - name: Generate GitHub Apps token
+        # この step で id を指定しておけば、次の step で ${{ steps.generate-token.outputs.token }} のように参照できる
+        id: generate-token
+        # https://github.com/actions/create-github-app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          # GitHub App の App ID
+          app-id: ${{ secrets.ISSUE_CHECKER_BOT_APP_ID }}
+          # GitHub App の管理画面で発行した private key
+          private-key: ${{ secrets.ISSUE_CHECKER_BOT_PRIVATE_KEY }}
+
+      # 古い issue を close にする
+      - name: Run stale issue closer action
+        uses: ./.github/actions/stale-issue-closer
+        with:
+          days-before-stale: ${{ github.event.inputs.days-before-stale || '30' }}  # 文字列として指定
+          github-token: ${{ steps.generate-token.outputs.token }}
