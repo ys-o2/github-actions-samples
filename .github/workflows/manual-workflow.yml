@@ -17,6 +17,9 @@ jobs:
     steps:
     - name: SENDO GURIITHINGUS
       run: echo "HAROO ${{inputs.name}}"
+  faraweru:
+    runs-on: ubuntu-latest
+    steps:
     - name: SENDO FARAWERU
       if: ${{ inputs.is-set-farewell-message }}
       run: echo "GUDDOBAI ${{inputs.name}}"
