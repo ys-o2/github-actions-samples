@@ -1,0 +1,20 @@
+name: Issue First Response
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  issue-comment:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+
+    # Issue が作成された時に作成者に返信コメントをする
+    - name: Comment on Issue creation
+      run: |
+        gh issue comment ${{ github.event.issue.number }} --body "@${{ github.event.issue.user.login }} issue の作成ありがとうございます。1ヶ月以内にチェックして返信します。（このレスポンスは自動返信です）"
+      env:
+        GH_TOKEN: ${{ secrets.MY_PAT }}
